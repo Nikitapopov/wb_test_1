@@ -6,6 +6,8 @@ import (
 	"wb_test_2/tasks/task_11"
 	"wb_test_2/tasks/task_12"
 	"wb_test_2/tasks/task_13"
+	"wb_test_2/tasks/task_14"
+	"wb_test_2/tasks/task_15"
 	"wb_test_2/tasks/task_2"
 	"wb_test_2/tasks/task_3"
 	"wb_test_2/tasks/task_4"
@@ -14,7 +16,6 @@ import (
 	"wb_test_2/tasks/task_7"
 	"wb_test_2/tasks/task_8"
 	"wb_test_2/tasks/task_9"
-	// "wb_test_2/tasks/task_15"
 	// "wb_test_2/tasks/task_16"
 	// "wb_test_2/tasks/task_17"
 	// "wb_test_2/tasks/task_18"
@@ -29,7 +30,7 @@ import (
 )
 
 func main() {
-	task := 13
+	task := 15
 
 	switch task {
 	case 1:
@@ -58,10 +59,10 @@ func main() {
 		task_12.Execute()
 	case 13:
 		task_13.Execute()
-		// case 14:
-		// 	task_14.Execute()
-		// case 15:
-		// 	task_15.Execute()
+	case 14:
+		task_14.Execute()
+	case 15:
+		task_15.Execute()
 		// case 16:
 		// 	task_16.Execute()
 		// case 17:
