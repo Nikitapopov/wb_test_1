@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-	// "golang.org/x/exp/utf8string"
+
+	"golang.org/x/exp/utf8string"
 )
 
 // К каким негативным последствиям может привести данный фрагмент кода, и как
@@ -20,30 +21,41 @@ import (
 // }
 
 // Последствия фрагмента кода:
-// 1. justString находится в глобальной памяти, поэтому память будет выделена в куче,
-// 		что имеет небольшой влияние на производительность
+// 1. justString находится в глобальной памяти, поэтому память будет выделена в куче, что имеет влияние на
+// 		производительность
 // 2. Срез строки выполняется как слайс байтов, в том время, как символы строки могут занимать больше одного байта
 // 3. Плохой нейминг
 
 func Execute() {
 	var justString string
-	setRandom100Symbols(&justString)
+	setRandom100SymbolsManually(&justString)
+	fmt.Println(justString)
+	setRandom100SymbolsWithUtf8stringPkg(&justString)
 	fmt.Println(justString)
 }
 
-// Функция для создания случайной строки и взятия и вывода от нее первых 100 символов
-func setRandom100Symbols(justString *string) {
+// Функция для создания случайной строки и взятия и вывода от нее первых 100 символов с помощью конвертации
+// в слайс рун и взятие среза от него.
+// Переименованный из someFunc.
+func setRandom100SymbolsManually(justString *string) {
 	// Создание строки
-	hugeStr := createHugeString(1 << 20)
-
-	// TODO разобраться, имеет ли это решение преимущество
-	// slc := utf8string.NewString(hugeStr).Slice(0, 100)
+	hugeStr := createHugeString(1 << 10)
 
 	// Преобразование строки к слайсу рун
 	hugeStrAsRunes := []rune(hugeStr)
 
 	// Взятие первых ста символов строки
 	*justString = string(hugeStrAsRunes[:100])
+}
+
+// Функция для создания случайной строки и взятия и вывода от нее первых 100 символов с помощью пакета utf8string.
+// Переименованный из someFunc.
+func setRandom100SymbolsWithUtf8stringPkg(justString *string) {
+	// Создание строки
+	hugeStr := createHugeString(1 << 10)
+
+	// Использование пакета utf8string, чтобы обработать строку и взять с 0 по 100 символы
+	*justString = utf8string.NewString(hugeStr).Slice(0, 100)
 }
 
 // Функция для генерации строки длиной size, состоящей из кириллицы
@@ -57,10 +69,11 @@ func createHugeString(size int) string {
 	// Заполнение bs символами кириллицы с пробелами
 	for i := 0; i < size; i++ {
 		var symbol rune
-		if r.Intn(10) == 0 {
+		// С вероятностью 10%, если это не первый символ, он приравнивается к пробелу
+		if r.Intn(10) == 0 && i > 0 && bs[i-1] != ' ' {
 			symbol = ' '
 		} else {
-			symbol = rune('А' + r.Intn(65))
+			symbol = rune('А' + r.Intn(64))
 		}
 		bs = append(bs, symbol)
 	}
